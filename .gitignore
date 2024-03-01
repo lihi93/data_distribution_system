@@ -1,0 +1,14 @@
+*
+
+/bin
+/lib
+!*/
+!*.c
+!*.h
+!.myfuncs
+!.gitignore
+!makefile*
+!*.cpp
+!*.hpp
+!*.jpeg
+!*.drawio
