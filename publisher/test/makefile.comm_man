@@ -1,0 +1,36 @@
+CC = g++
+CFLAGS = -c -std=c++11 -pedantic-errors -Wall -Wextra -I../include
+LDFLAGS = -std=c++11 -pedantic-errors -Wall -Wextra
+TARGET = comm_man
+OBJ = $(BIN_DIR)/$(TARGET).o $(BIN_DIR)/$(TARGET)_test.o $(BIN_DIR)/dispatcher.o $(BIN_DIR)/isub.o 
+BIN_DIR = ../bin
+
+.PHONY: all clean run
+
+all: $(TARGET) run
+
+$(TARGET): $(OBJ)
+	$(CC) $(LDFLAGS) $^ -o $@
+
+$(BIN_DIR)/$(TARGET).o: ../src/$(TARGET).cpp ../include/comm_man.hpp | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BIN_DIR)/$(TARGET)_test.o: $(TARGET)_test.cpp ../include/comm_man.hpp | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BIN_DIR)/dispatcher.o: ../src/dispatcher.cpp ../include/dispatcher.hpp | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BIN_DIR)/isub.o: ../src/isub.cpp ../include/isub.hpp | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+	
+
+run: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -f $(OBJ) $(TARGET)
+
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+

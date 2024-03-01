@@ -1,0 +1,41 @@
+CC = g++
+CFLAGS = -c -std=c++11 -pedantic-errors -Wall -Wextra -I../publisher/include -I../subscriber/include
+LDFLAGS = -std=c++11 -pedantic-errors -Wall -Wextra
+TARGET = sub1_test
+BIN_DIR = ../bin
+OBJ = $(BIN_DIR)/$(TARGET).o $(BIN_DIR)/comm_man.o $(BIN_DIR)/subscriber.o $(BIN_DIR)/shape.o $(BIN_DIR)/dispatcher.o $(BIN_DIR)/isub.o
+
+.PHONY: all clean run
+
+all: $(BIN_DIR)/$(TARGET) run
+
+$(BIN_DIR)/$(TARGET): $(OBJ) | $(BIN_DIR)
+	$(CC) $(LDFLAGS) $^ -o $@
+
+$(BIN_DIR)/$(TARGET).o: $(TARGET).cpp ../publisher/include/ | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BIN_DIR)/comm_man.o: ../publisher/src/comm_man.cpp ../publisher/include/comm_man.hpp | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+	
+$(BIN_DIR)/subscriber.o: ../subscriber/src/subscriber.cpp ../subscriber/include/subscriber.hpp | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BIN_DIR)/shape.o: ../publisher/src/shape.cpp ../publisher/include/shape.hpp | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BIN_DIR)/dispatcher.o: ../publisher/src/dispatcher.cpp ../publisher/include/dispatcher.hpp | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+	
+$(BIN_DIR)/isub.o: ../publisher/src/isub.cpp ../publisher/include/isub.hpp | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+run: $(BIN_DIR)/$(TARGET)
+	./$<
+
+clean:
+	rm -f $(OBJ) $(BIN_DIR)/$(TARGET)
+
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+
