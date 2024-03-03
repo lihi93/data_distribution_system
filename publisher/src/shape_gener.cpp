@@ -26,8 +26,8 @@ void ShapeGenerator::GenerateShapes(Dispatcher *disp, Ishape *shape, int freq)
 
     while(true)
     {
-        disp->Notify(shape->GetName(), serialized_shape);
         sleep(freq);
+        disp->Notify(shape->GetName(), serialized_shape);
     }
 }
 
