@@ -21,7 +21,6 @@ Subscriber::Subscriber(const char *server_ip, const int server_port): is_listeni
     server_addr.sin_addr.s_addr = inet_addr(server_ip);
     
     listening_thread = std::thread(&Subscriber::ListeningThread, this);
-    
 }
 
 Subscriber::~Subscriber()
@@ -42,6 +41,11 @@ void Subscriber::Subscribe(string shape)
     }
 }
 
+void Subscriber::StopRunning()
+{
+    shutdown(m_socket, SHUT_RD);
+}
+
 
 /******************************** inner funcs ***************************************/
 
@@ -50,13 +54,17 @@ void Subscriber::ListeningThread()
     while (true)
     {
         char recv_message[1024];
-        if (-1 == recv(m_socket, recv_message, sizeof(recv_message), 0))
+        int stat = recv(m_socket, recv_message, sizeof(recv_message), 0);
+        if (-1 == stat)
         {
-            perror("recv");
+            throw std::system_error(errno, std::system_category(), "recv Failed");
+        }
+        else if (0 == stat)
+        {
+            break;
         }
 
         this->AtNotify(recv_message);
-        sleep(1);
     }
 }
 

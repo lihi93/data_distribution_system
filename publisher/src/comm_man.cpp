@@ -9,7 +9,7 @@
 
 #include "comm_man.hpp"
 
-CommMan::CommMan(Dispatcher *disp, const char *ip_addr, int port):
+CommMan::CommMan(Dispatcher &disp, const char *ip_addr, int port):
     m_disp(disp)
 {
     if (-1 == (m_socket = socket(AF_INET, SOCK_DGRAM, 0)))
@@ -31,8 +31,8 @@ CommMan::CommMan(Dispatcher *disp, const char *ip_addr, int port):
 
 CommMan::~CommMan()
 {
+    close(m_socket);
     m_listener.join();
-    m_stop.join();    
 }
 
 void CommMan::Listening()
@@ -46,9 +46,14 @@ void CommMan::Listening()
         socklen_t sender_address_len = sizeof(sender_address);
 
         /*listening to messages from subs*/
-        if (-1 == recvfrom(m_socket, shape_msg, sizeof(shape_msg), 0, (struct sockaddr *)&sender_address, &sender_address_len))
+        int stat = recvfrom(m_socket, shape_msg, sizeof(shape_msg), 0, (struct sockaddr *)&sender_address, &sender_address_len);
+        if (-1 == stat)
         {
             throw std::system_error(errno, std::system_category(), "recvfrom Failed");
+        }
+        else if (0 == stat)
+        {
+            break;
         }
         
         std::shared_ptr<Isub> new_sub = std::make_shared<UDPsub>(sender_address);
@@ -56,17 +61,12 @@ void CommMan::Listening()
 
         /* registering new_sub to dispatcher with its
             shape of interest */
-        m_disp->Register(shape, new_sub);
+        m_disp.Register(shape, new_sub);
     }
 }
 
 
 void CommMan::StopComm()
 {
-    m_stop = thread(&CommMan::Stop, this); //except
-}
-
-void CommMan::Stop()
-{
-    close(m_socket);
+    shutdown(m_socket, SHUT_RD);
 }

@@ -156,3 +156,10 @@ shape_data_t StringToStruct(std::string shape_string)
     }
     return to_ret;
 }
+
+
+std::string ShapeToString(Ishape *shape)
+{
+    std::string shape_string("/1=" + shape->GetName() + "/2=" +  shape->GetColor() + "/3=" + std::to_string(shape->GetSize()) + "/4=" + std::to_string(shape->GetLatitude()) + "/5=" + std::to_string(shape->GetLongitude()) + "/6=" + std::to_string(shape->GetAltitude()));
+    return shape_string;
+}

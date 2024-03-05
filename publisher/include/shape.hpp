@@ -3,6 +3,8 @@
 
 #include <string> 
 
+enum SHAPES {SQUARE, CIRCLE, RECTANGLE};
+
 typedef struct ShapeData
 {
 public:
@@ -26,7 +28,6 @@ public:
     virtual float GetLatitude() const = 0;
     virtual float GetLongitude() const = 0;
     virtual float GetAltitude() const = 0;
-
 };
 
 class Circle : public Ishape 
@@ -72,6 +73,6 @@ private:
 };
 
 shape_data_t StringToStruct(std::string shape_string);
-
+std::string ShapeToString(Ishape *shape);
 
 #endif

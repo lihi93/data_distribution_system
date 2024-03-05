@@ -13,15 +13,13 @@ using std::thread;
 class CommMan
 {
 public:
-    CommMan(Dispatcher *disp, const char *ip_addr, int port);
+    CommMan(Dispatcher &disp, const char *ip_addr, int port);
     ~CommMan();
     void StopComm();
 
 private:
     void Listening();
-    void Stop();
-
-    Dispatcher *m_disp;
+    Dispatcher &m_disp;
     int m_socket;
     thread m_listener;
     thread m_stop;

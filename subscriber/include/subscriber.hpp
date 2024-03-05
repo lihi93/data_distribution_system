@@ -25,12 +25,11 @@ public:
     Subscriber(const char *server_ip, const int server_port);
     ~Subscriber(); 
     void Subscribe(string shape);
+    void StopRunning();
 
 private:
-    void Connecting(); //listening to broadcasting, sending confirmation(shape interest)
-    void Listening(); //selector
     void AtNotify(string msg);
-    void ListeningThread(); //selector
+    void ListeningThread();
 
     char server_ip;
     int server_port;
